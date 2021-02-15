@@ -6,8 +6,6 @@ import com.github.kdaniel2410.commands.InviteCommand;
 import com.github.kdaniel2410.commands.UnfollowCommand;
 import com.github.kdaniel2410.handlers.DatabaseHandler;
 import com.github.kdaniel2410.handlers.TwitterHandler;
-import com.github.kdaniel2410.listeners.MyServerChannelDeleteListener;
-import com.github.kdaniel2410.listeners.MyServerLeaveListener;
 import de.btobastian.sdcf4j.CommandHandler;
 import de.btobastian.sdcf4j.handler.JavacordHandler;
 import org.apache.logging.log4j.LogManager;
@@ -45,8 +43,8 @@ public class Main {
         TwitterHandler twitterHandler = new TwitterHandler(api, databaseHandler);
         twitterHandler.loadTwitterListeners();
 
-        api.addServerChannelDeleteListener(new MyServerChannelDeleteListener(databaseHandler));
-        api.addServerLeaveListener(new MyServerLeaveListener(databaseHandler));
+        api.addServerChannelDeleteListener(event -> databaseHandler.deleteByChannelId(event.getChannel().getId()));
+        api.addServerLeaveListener(event -> databaseHandler.deleteByServerId(event.getServer().getId()));
 
         CommandHandler commandHandler = new JavacordHandler(api);
         commandHandler.registerCommand(new FollowCommand(twitterHandler, databaseHandler));
