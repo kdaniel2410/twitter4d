@@ -7,7 +7,9 @@ import de.btobastian.sdcf4j.CommandExecutor;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.Message;
+import org.javacord.api.entity.permission.PermissionType;
 import org.javacord.api.entity.server.Server;
+import org.javacord.api.entity.user.User;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
@@ -22,7 +24,11 @@ public class UnfollowCommand implements CommandExecutor {
     }
 
     @Command(aliases = {">unfollow"})
-    public void onCommand(String[] args, DiscordApi api, TextChannel channel, Message message, Server server) {
+    public void onCommand(String[] args, DiscordApi api, TextChannel channel, Message message, Server server, User user) {
+        if (!server.hasPermission(user, PermissionType.MANAGE_CHANNELS)) {
+            channel.sendMessage("**Error** you do not have the correct permissions to do that.");
+            return;
+        }
         if (args.length < 1) {
             channel.sendMessage("**Error** not enough arguments");
             return;
