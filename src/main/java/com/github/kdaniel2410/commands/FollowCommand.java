@@ -36,17 +36,22 @@ public class FollowCommand implements CommandExecutor {
             channel.sendMessage("**Error** not enough arguments");
             return;
         }
-        api.getThreadPool().getExecutorService().execute(() -> {
-            long twitterId = 0;
-            try {
-                twitterId = TwitterFactory.getSingleton().showUser(args[0]).getId();
-                ResultSet resultSet = databaseHandler.getByTwitterId(twitterId);
-                if (resultSet.next()) return;
-            } catch (TwitterException | SQLException e) {
-                e.printStackTrace();
+        long twitterId;
+        try {
+            twitterId = TwitterFactory.getSingleton().showUser(args[0]).getId();
+            ResultSet resultSet = databaseHandler.getByTwitterId(twitterId);
+            if (resultSet.next()) {
+                channel.sendMessage("**Error** you are already following that account");
+                return;
             }
-            databaseHandler.insertNew(server.getId(), channel.getId(), twitterId);
-            twitterHandler.addTweetListener(channel.getId(), twitterId);
+        } catch (TwitterException | SQLException e) {
+            channel.sendMessage("**Error** twitter user not found");
+            return;
+        }
+        long finalTwitterId = twitterId;
+        api.getThreadPool().getExecutorService().execute(() -> {
+            twitterHandler.addTweetListener(channel.getId(), finalTwitterId);
+            databaseHandler.insertNew(server.getId(), channel.getId(), finalTwitterId);
         });
         message.addReaction("\u2705");
     }
