@@ -13,6 +13,9 @@ import org.javacord.api.entity.user.User;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class FollowCommand implements CommandExecutor {
 
     private final TwitterHandler twitterHandler;
@@ -37,7 +40,9 @@ public class FollowCommand implements CommandExecutor {
             long twitterId = 0;
             try {
                 twitterId = TwitterFactory.getSingleton().showUser(args[0]).getId();
-            } catch (TwitterException e) {
+                ResultSet resultSet = databaseHandler.getByTwitterId(twitterId);
+                if (resultSet.next()) return;
+            } catch (TwitterException | SQLException e) {
                 e.printStackTrace();
             }
             databaseHandler.insertNew(server.getId(), channel.getId(), twitterId);
