@@ -21,6 +21,8 @@ public class DatabaseHandler {
          }
     }
 
+
+
     public ResultSet getAll() {
         try {
             Statement statement = connection.createStatement();
@@ -31,7 +33,17 @@ public class DatabaseHandler {
         return null;
     }
 
-    public ResultSet getAllFromServer(long serverId) {
+    public ResultSet getByTwitterId(long twitterId) {
+        try {
+            Statement statement = connection.createStatement();
+            return statement.executeQuery("select * from streams where twitterId = " + twitterId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public ResultSet getByServerId(long serverId) {
         try {
             Statement statement = connection.createStatement();
             return statement.executeQuery("select * from streams where serverId = " + serverId);
