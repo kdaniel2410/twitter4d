@@ -27,5 +27,5 @@ test {
 }
 
 application {
-    mainClass = 'com.github.kdaniel2410.BruvBot'
+    mainClass = 'com.github.kdaniel2410.Main'
 }
