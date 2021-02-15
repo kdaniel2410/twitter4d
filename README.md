@@ -1,7 +1,7 @@
 # :bird: twitter4d
 
 ### :writing_hand: Desciption
-twitter4d is a simple Discord bot written using Javacord and twitter4j. It allows server administrators to setup stream new tweets to text channels.
+twitter4d is a simple Discord bot written using Javacord and twitter4j. It allows server administrators to stream new tweets to specific text channels.
 
 ### :link: How do I add this to my server?
 Although this bot is in very early stage and may not be 100% reliable you can click [HERE](https://discord.com/api/oauth2/authorize?client_id=810925444756668417&permissions=18496&scope=bot) to invite this discord bot to your server.
