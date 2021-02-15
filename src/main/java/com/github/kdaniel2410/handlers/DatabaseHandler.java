@@ -21,8 +21,6 @@ public class DatabaseHandler {
          }
     }
 
-
-
     public ResultSet getAll() {
         try {
             Statement statement = connection.createStatement();
