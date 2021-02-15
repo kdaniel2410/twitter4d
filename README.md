@@ -9,10 +9,10 @@ Although this bot is in very early stage and may not be 100% reliable you can cl
 ### :keyboard: Command usage
 **Remember** to exclude the @ symbol from twitter names.
 
-| Command | Arguments | Description |
-| ------- | --------- | ----------- |
-| \>follow | twitter name | Follow an account. New tweets from this account will be sent to the channel where the command is sent. |
-| \>unfollow | twitter name | Unfollow an account. |
+| Command | Arguments | Description | Required Permissions |
+| ------- | --------- | ----------- | -------------------- |
+| \>follow | twitter name | Follow an account. New tweets from this account will be sent to the channel where the command is sent. | MANAGE_CHANNELS |
+| \>unfollow | twitter name | Unfollow an account. | MANAGE_CHANNELS |
 | \>following |  | List the followed accounts on your server and the channels where new tweets will be sent. |
 | \>invite |  | Shows the invite url. |
 
