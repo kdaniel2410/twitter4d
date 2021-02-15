@@ -15,7 +15,7 @@ public class InviteCommand implements CommandExecutor {
         EmbedBuilder embed = new EmbedBuilder()
                 .setColor(Constants.EMBED_COLOR)
                 .setThumbnail(api.getYourself().getAvatar())
-                .setDescription("Click [here](" + api.createBotInvite(Permissions.fromBitmask(8)) + ") to invite me to your discord server.");
+                .setDescription("Click [here](" + api.createBotInvite(Permissions.fromBitmask(18496)) + ") to invite me to your discord server.");
 
         channel.sendMessage(embed);
     }
