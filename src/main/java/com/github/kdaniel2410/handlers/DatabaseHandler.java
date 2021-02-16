@@ -9,6 +9,7 @@ import java.sql.*;
 public class DatabaseHandler {
 
     private Connection connection = null;
+    private static final Logger logger = LogManager.getLogger();
 
     public DatabaseHandler() {
         try {
@@ -25,7 +26,7 @@ public class DatabaseHandler {
             Statement statement = connection.createStatement();
             return statement.executeQuery("select * from streams");
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         return null;
     }
@@ -35,7 +36,7 @@ public class DatabaseHandler {
             Statement statement = connection.createStatement();
             return statement.executeQuery("select distinct twitterId from streams");
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         return null;
     }
@@ -45,7 +46,7 @@ public class DatabaseHandler {
             Statement statement = connection.createStatement();
             return statement.executeQuery("select * from streams where twitterId = " + twitterId);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         return null;
     }
@@ -55,7 +56,7 @@ public class DatabaseHandler {
             Statement statement = connection.createStatement();
             return statement.executeQuery("select * from streams where serverId = " + serverId);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         return null;
     }
@@ -65,7 +66,7 @@ public class DatabaseHandler {
             Statement statement = connection.createStatement();
             return statement.executeQuery("select * from streams where channelId = " + channelId + " and twitterId = " + twitterId);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         return null;
     }
@@ -75,7 +76,7 @@ public class DatabaseHandler {
             Statement statement = connection.createStatement();
             statement.executeUpdate(String.format("insert into streams values (%d, %d, %d)", serverId, channelId, twitterId));
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
     }
 
@@ -84,7 +85,7 @@ public class DatabaseHandler {
             Statement statement = connection.createStatement();
             statement.executeUpdate("delete from streams where serverId = " + serverId);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
     }
 
@@ -93,7 +94,7 @@ public class DatabaseHandler {
             Statement statement = connection.createStatement();
             statement.executeUpdate("delete from streams where channelId = " + channelId);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
     }
 
@@ -102,7 +103,7 @@ public class DatabaseHandler {
             Statement statement = connection.createStatement();
             statement.executeUpdate("delete from streams where twitterId = " + twitterId);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
     }
 }
