@@ -13,13 +13,13 @@ import java.util.HashMap;
 public class TwitterHandler {
 
     private final DiscordApi api;
-    private final TwitterStream twitterStreamFactory;
+    private final TwitterStreamFactory twitterStreamFactory;
     private final DatabaseHandler databaseHandler;
     private HashMap<Long, StatusListener> streams = new HashMap<>();
 
     public TwitterHandler(DiscordApi api, DatabaseHandler databaseHandler) {
         this.api = api;
-        this.twitterStreamFactory = new TwitterStreamFactory().getInstance();
+        this.twitterStreamFactory = new TwitterStreamFactory();
         this.databaseHandler = databaseHandler;
     }
 
@@ -64,7 +64,7 @@ public class TwitterHandler {
             }
         };
         streams.put(twitterId, listener);
-        twitterStreamFactory.addListener(listener).filter(new FilterQuery().follow(twitterId));
+        twitterStreamFactory.getInstance().addListener(listener).filter(new FilterQuery().follow(twitterId));
     }
 
     public void loadTwitterListeners() {
@@ -79,6 +79,6 @@ public class TwitterHandler {
     }
 
     public void removeTwitterListener(long twitterId) {
-        twitterStreamFactory.removeListener(streams.get(twitterId));
+        twitterStreamFactory.getInstance().removeListener(streams.get(twitterId));
     }
 }
