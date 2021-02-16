@@ -39,9 +39,9 @@ public class FollowCommand implements CommandExecutor {
         long twitterId;
         try {
             twitterId = TwitterFactory.getSingleton().showUser(args[0]).getId();
-            ResultSet resultSet = databaseHandler.getByTwitterId(twitterId);
+            ResultSet resultSet = databaseHandler.getByChannelAndTwitterId(channel.getId(), twitterId);
             if (resultSet.next()) {
-                channel.sendMessage("**Error** you are already following that account");
+                channel.sendMessage("**Error** you are already following that account in this channel");
                 return;
             }
         } catch (TwitterException | SQLException e) {

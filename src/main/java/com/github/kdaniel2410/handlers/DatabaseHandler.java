@@ -51,6 +51,16 @@ public class DatabaseHandler {
         return null;
     }
 
+    public ResultSet getByChannelAndTwitterId(long channelId, long twitterId) {
+        try {
+            Statement statement = connection.createStatement();
+            return statement.executeQuery("select * from streams where channelId = " + channelId + " and twitterId = " + twitterId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void insertNew(long serverId, long channelId, long twitterId) {
         try {
             Statement statement = connection.createStatement();
