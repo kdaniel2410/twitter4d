@@ -31,7 +31,7 @@ public class TwitterStatusListener implements StatusListener {
     public void onStatus(Status status) {
         if (status.isRetweet()) return;
         if (status.getInReplyToScreenName() != null) return;
-        String url = String.format("https://twitter.com/%s/status/%d", status.getUser().getName(), status.getId());
+        String url = String.format("https://twitter.com/%s/status/%d", status.getUser().getScreenName(), status.getId());
         EmbedBuilder embed = new EmbedBuilder()
                 .setColor(Constants.EMBED_COLOR)
                 .setAuthor(status.getUser().getScreenName(), status.getUser().getURL(), status.getUser().getProfileImageURL())
