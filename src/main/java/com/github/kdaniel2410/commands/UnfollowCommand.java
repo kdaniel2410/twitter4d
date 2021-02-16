@@ -24,7 +24,7 @@ public class UnfollowCommand implements CommandExecutor {
         this.databaseHandler = databaseHandler;
     }
 
-    @Command(aliases = {">unfollow"})
+    @Command(aliases = {">unfollow"}, async = true)
     public void onCommand(String[] args, DiscordApi api, TextChannel channel, Message message, Server server, User user) {
         if (!server.hasPermission(user, PermissionType.MANAGE_CHANNELS)) {
             channel.sendMessage("**Error** you do not have the correct permissions to do that.").exceptionally(ExceptionLogger.get());
