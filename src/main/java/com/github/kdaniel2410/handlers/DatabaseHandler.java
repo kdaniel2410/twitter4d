@@ -31,6 +31,16 @@ public class DatabaseHandler {
         return null;
     }
 
+    public ResultSet getAllUniqueTwitterIds() {
+        try {
+            Statement statement = connection.createStatement();
+            return statement.executeQuery("select distinct twitterId from streams");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public ResultSet getByTwitterId(long twitterId) {
         try {
             Statement statement = connection.createStatement();

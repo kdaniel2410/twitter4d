@@ -41,7 +41,6 @@ public class Main {
 
         DatabaseHandler databaseHandler = new DatabaseHandler();
         TwitterHandler twitterHandler = new TwitterHandler(api, databaseHandler);
-        twitterHandler.loadTwitterListeners();
 
         api.addServerChannelDeleteListener(event -> databaseHandler.deleteByChannelId(event.getChannel().getId()));
         api.addServerLeaveListener(event -> databaseHandler.deleteByServerId(event.getServer().getId()));

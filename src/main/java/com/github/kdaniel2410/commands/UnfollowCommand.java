@@ -40,8 +40,8 @@ public class UnfollowCommand implements CommandExecutor {
             } catch (TwitterException e) {
                 e.printStackTrace();
             }
+            twitterHandler.removeFromFilterQuery(twitterId);
             databaseHandler.deleteByTwitterId(twitterId);
-            twitterHandler.removeTwitterListener(twitterId);
         });
         message.addReaction("\u2705");
     }

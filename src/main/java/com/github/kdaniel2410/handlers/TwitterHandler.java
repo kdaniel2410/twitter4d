@@ -1,84 +1,73 @@
 package com.github.kdaniel2410.handlers;
 
-import com.github.kdaniel2410.Constants;
+import com.github.kdaniel2410.listeners.TwitterStatusListener;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.javacord.api.DiscordApi;
-import org.javacord.api.entity.channel.Channel;
-import org.javacord.api.entity.message.embed.EmbedBuilder;
-import twitter4j.*;
+import twitter4j.FilterQuery;
+import twitter4j.TwitterStream;
+import twitter4j.TwitterStreamFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class TwitterHandler {
 
-    private final DiscordApi api;
-    private final TwitterStreamFactory twitterStreamFactory;
     private final DatabaseHandler databaseHandler;
-    private HashMap<Long, StatusListener> streams = new HashMap<>();
+    private final DiscordApi api;
+    private TwitterStream twitterStream;
+    private static final Logger logger = LogManager.getLogger();
+    private final ArrayList<Long> follows;
 
     public TwitterHandler(DiscordApi api, DatabaseHandler databaseHandler) {
         this.api = api;
-        this.twitterStreamFactory = new TwitterStreamFactory();
         this.databaseHandler = databaseHandler;
-    }
-
-    public void addTweetListener(long channelId, long twitterId) {
-        StatusListener listener = new StatusListener() {
-            @Override
-            public void onStatus(Status status) {
-                if (status.isRetweet()) return;
-                if (status.getInReplyToScreenName() != null) return;
-                String url = String.format("https://twitter.com/%s/status/%d", status.getUser().getName(), status.getId());
-                EmbedBuilder embed = new EmbedBuilder()
-                        .setColor(Constants.EMBED_COLOR)
-                        .setAuthor(status.getUser().getScreenName(), status.getUser().getURL(), status.getUser().getProfileImageURL())
-                        .setDescription(String.format("%s Click [here](%s) to go to open this tweet in twitter", status.getText(), url))
-                        .setTimestamp(status.getCreatedAt().toInstant());
-                api.getChannelById(channelId).flatMap(Channel::asTextChannel).ifPresent(channel -> channel.sendMessage(embed));
-            }
-
-            @Override
-            public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
-
-            }
-
-            @Override
-            public void onTrackLimitationNotice(int numberOfLimitedStatuses) {
-
-            }
-
-            @Override
-            public void onScrubGeo(long userId, long upToStatusId) {
-
-            }
-
-            @Override
-            public void onStallWarning(StallWarning warning) {
-
-            }
-
-            @Override
-            public void onException(Exception e) {
-                e.printStackTrace();
-            }
-        };
-        streams.put(twitterId, listener);
-        twitterStreamFactory.getInstance().addListener(listener).filter(new FilterQuery().follow(twitterId));
-    }
-
-    public void loadTwitterListeners() {
+        ResultSet all = databaseHandler.getAllUniqueTwitterIds();
+        this.follows = new ArrayList<>();
         try {
-            ResultSet all = databaseHandler.getAll();
             while (all.next()) {
-                addTweetListener(all.getLong("channelId"), all.getLong("twitterId"));
+                follows.add(all.getLong("twitterId"));
             }
+            all.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
+        startStream();
     }
 
-    public void removeTwitterListener(long twitterId) {
-        twitterStreamFactory.getInstance().removeListener(streams.get(twitterId));
+    public void startStream() {
+        if (follows.size() < 1) {
+            logger.info("No existing follows found, stream will be created after first follow command");
+            return;
+        }
+        long[] following = new long[follows.size()];
+        for (int i = 0; i < follows.size(); i++) {
+            following[i] = follows.get(i);
+        }
+        logger.info("Starting stream following {}", following);
+        this.twitterStream = new TwitterStreamFactory().getInstance().addListener(new TwitterStatusListener(api, databaseHandler)).filter(new FilterQuery().follow(following));
+    }
+
+    public void addToFilterQuery(long twitterId) {
+        if (follows.contains(twitterId)) return;
+        follows.add(twitterId);
+        try {
+            twitterStream.cleanUp();
+        } catch (NullPointerException e) {
+            logger.warn("Tried cleaning up a twitter stream that never existed");
+        }
+        startStream();
+    }
+
+    public void removeFromFilterQuery(long twitterId) {
+        if (!follows.contains(twitterId)) return;
+        follows.remove(twitterId);
+        try {
+            twitterStream.cleanUp();
+        } catch (NullPointerException e) {
+            logger.warn("Tried cleaning up a twitter stream that never existed");
+        }
+        startStream();
     }
 }

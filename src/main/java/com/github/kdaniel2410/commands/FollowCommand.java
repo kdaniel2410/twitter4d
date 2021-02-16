@@ -49,10 +49,8 @@ public class FollowCommand implements CommandExecutor {
             return;
         }
         long finalTwitterId = twitterId;
-        api.getThreadPool().getExecutorService().execute(() -> {
-            twitterHandler.addTweetListener(channel.getId(), finalTwitterId);
-            databaseHandler.insertNew(server.getId(), channel.getId(), finalTwitterId);
-        });
+        twitterHandler.addToFilterQuery(finalTwitterId);
+        databaseHandler.insertNew(server.getId(), channel.getId(), finalTwitterId);
         message.addReaction("\u2705");
     }
 }
