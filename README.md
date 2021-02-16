@@ -3,7 +3,7 @@
 ### :warning: Warning
 There is currently a bot breaking issue that I am working on. As a result I have had to take the bot offline for the time being.
 
-### :writing_hand: Desciption
+### :writing_hand: Description
 twitter4d is a simple Discord bot written using Javacord and twitter4j. It allows server administrators to stream new tweets to specific text channels.
 
 ### :link: How do I add this to my server?
