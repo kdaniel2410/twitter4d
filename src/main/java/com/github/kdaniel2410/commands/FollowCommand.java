@@ -4,6 +4,8 @@ import com.github.kdaniel2410.handlers.DatabaseHandler;
 import com.github.kdaniel2410.handlers.TwitterHandler;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.Message;
@@ -21,6 +23,7 @@ public class FollowCommand implements CommandExecutor {
 
     private final TwitterHandler twitterHandler;
     private final DatabaseHandler databaseHandler;
+    private static final Logger logger = LogManager.getLogger();
 
     public FollowCommand(TwitterHandler twitterHandler, DatabaseHandler databaseHandler) {
         this.twitterHandler = twitterHandler;
@@ -53,5 +56,6 @@ public class FollowCommand implements CommandExecutor {
         twitterHandler.addToFilterQuery(finalTwitterId);
         databaseHandler.insertNew(server.getId(), channel.getId(), finalTwitterId);
         message.addReaction("\u2705").exceptionally(ExceptionLogger.get());
+        logger.info("Follow command executed by {} in {} on {}", user.getName(), channel, server.getName());
     }
 }

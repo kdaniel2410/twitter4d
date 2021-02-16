@@ -38,6 +38,7 @@ public class TwitterStatusListener implements StatusListener {
                 .setDescription(String.format("%s Click [here](%s) to go to open this tweet in twitter", status.getText(), url))
                 .setTimestamp(status.getCreatedAt().toInstant());
         ResultSet resultSet = databaseHandler.getByTwitterId(status.getUser().getId());
+        logger.info("New tweet from {}", status.getUser().getScreenName());
         try {
             while (resultSet.next()) {
                 api.getChannelById(resultSet.getLong("channelId")).flatMap(Channel::asServerTextChannel).ifPresent(channel -> channel.sendMessage(embed).exceptionally(ExceptionLogger.get()));

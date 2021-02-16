@@ -45,13 +45,14 @@ public class TwitterHandler {
         for (int i = 0; i < follows.size(); i++) {
             following[i] = follows.get(i);
         }
-        logger.info("Starting stream following {}", following);
+        logger.info("Starting stream following {} unique twitter accounts, the limit is 5000", following.length);
         this.twitterStream = new TwitterStreamFactory().getInstance().addListener(new TwitterStatusListener(api, databaseHandler)).filter(new FilterQuery().follow(following));
     }
 
     public void addToFilterQuery(long twitterId) {
         if (follows.contains(twitterId)) return;
         follows.add(twitterId);
+        logger.info("Added twitter id {} from the filter query", twitterId);
         try {
             twitterStream.cleanUp();
         } catch (NullPointerException e) {
@@ -63,6 +64,7 @@ public class TwitterHandler {
     public void removeFromFilterQuery(long twitterId) {
         if (!follows.contains(twitterId)) return;
         follows.remove(twitterId);
+        logger.info("Removed twitter id {} from the filter query", twitterId);
         try {
             twitterStream.cleanUp();
         } catch (NullPointerException e) {

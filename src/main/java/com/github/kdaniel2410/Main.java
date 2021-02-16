@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.Nameable;
+import org.javacord.api.entity.permission.Permissions;
 import org.javacord.api.entity.server.Server;
 
 public class Main {
@@ -32,6 +33,7 @@ public class Main {
                 .join();
 
         logger.info("Logged in as {}", api.getYourself().getName());
+        logger.info("User the following link to invite me to your server {}", api.createBotInvite(Permissions.fromBitmask(18496)));
         logger.info("Serving {} server(s) and {} cached user(s)", api.getServers().size(), api.getCachedUsers().size());
 
         for (Server server : api.getServers()) {
