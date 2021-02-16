@@ -8,12 +8,14 @@ import twitter4j.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 public class TwitterHandler {
 
     private final DiscordApi api;
     private final TwitterStream twitterStreamFactory;
     private final DatabaseHandler databaseHandler;
+    private HashMap<Long, StatusListener> streams = new HashMap<>();
 
     public TwitterHandler(DiscordApi api, DatabaseHandler databaseHandler) {
         this.api = api;
@@ -22,7 +24,7 @@ public class TwitterHandler {
     }
 
     public void addTweetListener(long channelId, long twitterId) {
-        twitterStreamFactory.addListener(new StatusListener() {
+        StatusListener listener = new StatusListener() {
             @Override
             public void onStatus(Status status) {
                 if (status.isRetweet()) return;
@@ -60,7 +62,9 @@ public class TwitterHandler {
             public void onException(Exception e) {
                 e.printStackTrace();
             }
-        }).filter(new FilterQuery().follow(twitterId));
+        };
+        streams.put(twitterId, listener);
+        twitterStreamFactory.addListener(listener).filter(new FilterQuery().follow(twitterId));
     }
 
     public void loadTwitterListeners() {
@@ -74,8 +78,7 @@ public class TwitterHandler {
         }
     }
 
-    public void reloadTwitterListeners() {
-        twitterStreamFactory.clearListeners();
-        loadTwitterListeners();
+    public void removeTwitterListener(long twitterId) {
+        twitterStreamFactory.removeListener(streams.get(twitterId));
     }
 }

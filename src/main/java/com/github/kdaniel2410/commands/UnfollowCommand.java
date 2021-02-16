@@ -41,7 +41,7 @@ public class UnfollowCommand implements CommandExecutor {
                 e.printStackTrace();
             }
             databaseHandler.deleteByTwitterId(twitterId);
-            twitterHandler.reloadTwitterListeners();
+            twitterHandler.removeTwitterListener(twitterId);
         });
         message.addReaction("\u2705");
     }
