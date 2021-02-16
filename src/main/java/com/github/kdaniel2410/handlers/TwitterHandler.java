@@ -67,7 +67,7 @@ public class TwitterHandler {
         try {
             ResultSet all = databaseHandler.getAll();
             while (all.next()) {
-                addTweetListener(all.getInt("channelId"), all.getInt("twitterId"));
+                addTweetListener(all.getLong("channelId"), all.getLong("twitterId"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
