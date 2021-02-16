@@ -52,7 +52,7 @@ public class TwitterHandler {
     public void addToFilterQuery(long twitterId) {
         if (follows.contains(twitterId)) return;
         follows.add(twitterId);
-        logger.info("Added twitter id {} from the filter query", twitterId);
+        logger.info("Added twitter id {} to  the filter query", twitterId);
         try {
             twitterStream.cleanUp();
         } catch (NullPointerException e) {

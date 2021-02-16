@@ -12,6 +12,7 @@ import org.javacord.api.entity.channel.Channel;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.entity.server.Server;
+import org.javacord.api.entity.user.User;
 import org.javacord.api.util.logging.ExceptionLogger;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -29,7 +30,7 @@ public class FollowingCommand implements CommandExecutor {
     }
 
     @Command(aliases = {">following"})
-    public void onCommand(DiscordApi api, Server server, TextChannel channel) throws SQLException, TwitterException {
+    public void onCommand(DiscordApi api, Server server, TextChannel channel, User user) throws SQLException, TwitterException {
         StringBuilder description = new StringBuilder();
         ResultSet resultSet = databaseHandler.getByServerId(server.getId());
         while (resultSet.next()) {
@@ -50,5 +51,6 @@ public class FollowingCommand implements CommandExecutor {
         } else {
             channel.sendMessage("You are not following any twitter account(s) on this discord server").exceptionally(ExceptionLogger.get());
         }
+        logger.info("Following command executed by {} in {} on {}", user.getName(), channel, server.getName());
     }
 }
