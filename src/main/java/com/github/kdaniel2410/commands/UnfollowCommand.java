@@ -10,6 +10,7 @@ import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.permission.PermissionType;
 import org.javacord.api.entity.server.Server;
 import org.javacord.api.entity.user.User;
+import org.javacord.api.util.logging.ExceptionLogger;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
@@ -26,11 +27,11 @@ public class UnfollowCommand implements CommandExecutor {
     @Command(aliases = {">unfollow"})
     public void onCommand(String[] args, DiscordApi api, TextChannel channel, Message message, Server server, User user) {
         if (!server.hasPermission(user, PermissionType.MANAGE_CHANNELS)) {
-            channel.sendMessage("**Error** you do not have the correct permissions to do that.");
+            channel.sendMessage("**Error** you do not have the correct permissions to do that.").exceptionally(ExceptionLogger.get());
             return;
         }
         if (args.length < 1) {
-            channel.sendMessage("**Error** not enough arguments");
+            channel.sendMessage("**Error** not enough arguments").exceptionally(ExceptionLogger.get());
             return;
         }
         api.getThreadPool().getExecutorService().execute(() -> {
@@ -43,6 +44,6 @@ public class UnfollowCommand implements CommandExecutor {
             twitterHandler.removeFromFilterQuery(twitterId);
             databaseHandler.deleteByTwitterId(twitterId);
         });
-        message.addReaction("\u2705");
+        message.addReaction("\u2705").exceptionally(ExceptionLogger.get());
     }
 }

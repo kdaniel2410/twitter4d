@@ -12,6 +12,7 @@ import org.javacord.api.entity.channel.Channel;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.entity.server.Server;
+import org.javacord.api.util.logging.ExceptionLogger;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
@@ -47,7 +48,7 @@ public class FollowingCommand implements CommandExecutor {
                     .setDescription(description.toString())
             );
         } else {
-            channel.sendMessage("You are not following any twitter account(s) on this discord server");
+            channel.sendMessage("You are not following any twitter account(s) on this discord server").exceptionally(ExceptionLogger.get());
         }
     }
 }

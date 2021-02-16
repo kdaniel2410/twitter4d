@@ -10,6 +10,7 @@ import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.permission.PermissionType;
 import org.javacord.api.entity.server.Server;
 import org.javacord.api.entity.user.User;
+import org.javacord.api.util.logging.ExceptionLogger;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
@@ -29,11 +30,11 @@ public class FollowCommand implements CommandExecutor {
     @Command(aliases = {">follow"})
     public void onCommand(String[] args, DiscordApi api, TextChannel channel, Message message, Server server, User user) {
         if (!server.hasPermission(user, PermissionType.MANAGE_CHANNELS)) {
-            channel.sendMessage("**Error** you do not have the correct permissions to do that.");
+            channel.sendMessage("**Error** you do not have the correct permissions to do that.").exceptionally(ExceptionLogger.get());
             return;
         }
         if (args.length < 1) {
-            channel.sendMessage("**Error** not enough arguments");
+            channel.sendMessage("**Error** not enough arguments").exceptionally(ExceptionLogger.get());
             return;
         }
         long twitterId;
@@ -41,16 +42,16 @@ public class FollowCommand implements CommandExecutor {
             twitterId = TwitterFactory.getSingleton().showUser(args[0]).getId();
             ResultSet resultSet = databaseHandler.getByChannelAndTwitterId(channel.getId(), twitterId);
             if (resultSet.next()) {
-                channel.sendMessage("**Error** you are already following that account in this channel");
+                channel.sendMessage("**Error** you are already following that account in this channel").exceptionally(ExceptionLogger.get());
                 return;
             }
         } catch (TwitterException | SQLException e) {
-            channel.sendMessage("**Error** twitter user not found");
+            channel.sendMessage("**Error** twitter user not found").exceptionally(ExceptionLogger.get());
             return;
         }
         long finalTwitterId = twitterId;
         twitterHandler.addToFilterQuery(finalTwitterId);
         databaseHandler.insertNew(server.getId(), channel.getId(), finalTwitterId);
-        message.addReaction("\u2705");
+        message.addReaction("\u2705").exceptionally(ExceptionLogger.get());
     }
 }

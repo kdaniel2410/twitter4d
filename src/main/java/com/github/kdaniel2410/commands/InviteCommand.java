@@ -7,6 +7,7 @@ import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.entity.permission.Permissions;
+import org.javacord.api.util.logging.ExceptionLogger;
 
 public class InviteCommand implements CommandExecutor {
 
@@ -16,7 +17,6 @@ public class InviteCommand implements CommandExecutor {
                 .setColor(Constants.EMBED_COLOR)
                 .setThumbnail(api.getYourself().getAvatar())
                 .setDescription("Click [here](" + api.createBotInvite(Permissions.fromBitmask(18496)) + ") to invite me to your discord server.");
-
-        channel.sendMessage(embed);
+        channel.sendMessage(embed).exceptionally(ExceptionLogger.get());
     }
 }
