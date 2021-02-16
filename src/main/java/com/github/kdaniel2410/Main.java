@@ -31,12 +31,12 @@ public class Main {
                 .login()
                 .join();
 
-        logger.info("Logged in as " + api.getYourself().getName());
-        logger.info("Serving " + api.getServers().size() + " server(s) and " + api.getCachedUsers().size() + " cached user(s)");
+        logger.info("Logged in as {}", api.getYourself().getName());
+        logger.info("Serving {} server(s) and {} cached user(s)", api.getServers().size(), api.getCachedUsers().size());
 
         for (Server server : api.getServers()) {
             String owner = server.getOwner().map(Nameable::getName).orElse("unknown user");
-            logger.info(String.format("Loaded server %s owned by %s which has %d members", server.getName(), owner, server.getMembers().size()));
+            logger.info("Loaded server {} owned by {} which has {} members", server.getName(), owner, server.getMembers().size());
         }
 
         DatabaseHandler databaseHandler = new DatabaseHandler();

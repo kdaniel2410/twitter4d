@@ -8,7 +8,6 @@ import java.sql.*;
 
 public class DatabaseHandler {
 
-    private static final Logger logger = LogManager.getLogger();
     private Connection connection = null;
 
     public DatabaseHandler() {
