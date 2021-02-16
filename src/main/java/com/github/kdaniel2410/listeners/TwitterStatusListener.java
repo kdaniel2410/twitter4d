@@ -35,7 +35,7 @@ public class TwitterStatusListener implements StatusListener {
         EmbedBuilder embed = new EmbedBuilder()
                 .setColor(Constants.EMBED_COLOR)
                 .setAuthor(status.getUser().getScreenName(), status.getUser().getURL(), status.getUser().getProfileImageURL())
-                .setDescription(String.format("%s Click [here](%s) to go to open this tweet in twitter", status.getText(), url))
+                .setDescription(String.format("%s \n\n Click [here](%s) to open this tweet in twitter", status.getText(), url))
                 .setTimestamp(status.getCreatedAt().toInstant());
         ResultSet resultSet = databaseHandler.getByTwitterId(status.getUser().getId());
         logger.info("New tweet from {}", status.getUser().getScreenName());
