@@ -53,23 +53,21 @@ public class TwitterHandler {
         if (follows.contains(twitterId)) return;
         follows.add(twitterId);
         logger.info("Added twitter id {} to  the filter query", twitterId);
-        try {
-            twitterStream.cleanUp();
-        } catch (NullPointerException e) {
-            logger.warn("Tried cleaning up a twitter stream that never existed");
+        long[] following = new long[follows.size()];
+        for (int i = 0; i < follows.size(); i++) {
+            following[i] = follows.get(i);
         }
-        startStream();
+        this.twitterStream.filter(new FilterQuery().follow(following));
     }
 
     public void removeFromFilterQuery(long twitterId) {
         if (!follows.contains(twitterId)) return;
         follows.remove(twitterId);
         logger.info("Removed twitter id {} from the filter query", twitterId);
-        try {
-            twitterStream.cleanUp();
-        } catch (NullPointerException e) {
-            logger.warn("Tried cleaning up a twitter stream that never existed");
+        long[] following = new long[follows.size()];
+        for (int i = 0; i < follows.size(); i++) {
+            following[i] = follows.get(i);
         }
-        startStream();
+        this.twitterStream.filter(new FilterQuery().follow(following));
     }
 }
