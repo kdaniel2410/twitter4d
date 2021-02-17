@@ -8,8 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.Mentionable;
-import org.javacord.api.entity.channel.Channel;
-import org.javacord.api.entity.channel.TextChannel;
+import org.javacord.api.entity.channel.ServerTextChannel;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.entity.server.Server;
 import org.javacord.api.entity.user.User;
@@ -29,8 +28,8 @@ public class FollowingCommand implements CommandExecutor {
         this.databaseHandler = databaseHandler;
     }
 
-    @Command(aliases = {">following"})
-    public void onCommand(DiscordApi api, Server server, TextChannel channel, User user) throws SQLException, TwitterException {
+    @Command(aliases = {">following"}, privateMessages = false)
+    public void onCommand(DiscordApi api, Server server, ServerTextChannel channel, User user) throws SQLException, TwitterException {
         StringBuilder description = new StringBuilder();
         ResultSet resultSet = databaseHandler.getByServerId(server.getId());
         while (resultSet.next()) {
@@ -40,7 +39,7 @@ public class FollowingCommand implements CommandExecutor {
             description.append(TwitterFactory.getSingleton().showUser(resultSet.getLong("twitterId")).getName());
             description.append(" ) ");
             description.append("in ");
-            description.append(api.getChannelById(resultSet.getLong("channelId")).flatMap(Channel::asServerTextChannel).map(Mentionable::getMentionTag).orElse("missing channel"));
+            description.append(api.getServerTextChannelById(resultSet.getLong("channelId")).map(Mentionable::getMentionTag).orElse("missing channel"));
             description.append("\n");
         }
         if (description.length() > 0) {
@@ -51,6 +50,6 @@ public class FollowingCommand implements CommandExecutor {
         } else {
             channel.sendMessage("You are not following any twitter account(s) on this discord server").exceptionally(ExceptionLogger.get());
         }
-        logger.info("Following command executed by {} in {} on {}", user.getName(), channel, server.getName());
+        logger.info("Following command executed by {} in {} on {}", user.getName(), channel.getName(), server.getName());
     }
 }

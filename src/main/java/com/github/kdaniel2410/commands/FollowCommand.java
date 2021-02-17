@@ -7,7 +7,7 @@ import de.btobastian.sdcf4j.CommandExecutor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javacord.api.DiscordApi;
-import org.javacord.api.entity.channel.TextChannel;
+import org.javacord.api.entity.channel.ServerTextChannel;
 import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.permission.PermissionType;
 import org.javacord.api.entity.server.Server;
@@ -30,8 +30,8 @@ public class FollowCommand implements CommandExecutor {
         this.databaseHandler = databaseHandler;
     }
 
-    @Command(aliases = {">follow"}, async = true)
-    public void onCommand(String[] args, DiscordApi api, TextChannel channel, Message message, Server server, User user) {
+    @Command(aliases = {">follow"}, privateMessages = false, async = true)
+    public void onCommand(String[] args, DiscordApi api, ServerTextChannel channel, Message message, Server server, User user) {
         if (!server.hasPermission(user, PermissionType.MANAGE_CHANNELS)) {
             channel.sendMessage("**Error** you do not have the correct permissions to do that.").exceptionally(ExceptionLogger.get());
             return;
