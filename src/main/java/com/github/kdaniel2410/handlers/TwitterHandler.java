@@ -68,4 +68,8 @@ public class TwitterHandler {
         }
         twitterStream.filter(new FilterQuery().follow(following));
     }
+
+    public int getFollowingCount() {
+        return follows.size();
+    }
 }
