@@ -44,8 +44,7 @@ public class UnfollowCommand implements CommandExecutor {
             } catch (TwitterException e) {
                 e.printStackTrace();
             }
-            twitterHandler.removeFromFilterQuery(twitterId);
-            databaseHandler.deleteByTwitterId(twitterId);
+            databaseHandler.deleteByChannelAndTwitterId(channel.getId(), twitterId);
         });
         message.addReaction("\u2705").exceptionally(ExceptionLogger.get());
         logger.info("Unfollow command executed by {} in {} on {}", user.getName(), channel, server.getName());

@@ -89,6 +89,15 @@ public class DatabaseHandler {
         }
     }
 
+    public void deleteByChannelAndTwitterId(long channelId, long twitterId) {
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("delete from streams where channelId = " + channelId + " and twitterId = " + twitterId);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+    }
+
     public void deleteByChannelId(long channelId) {
         try {
             Statement statement = connection.createStatement();
