@@ -1,4 +1,4 @@
-# :bird: twitter4d
+# :bird: twitter4d [![CodeFactor](https://www.codefactor.io/repository/github/kdaniel2410/twitter4d/badge/master)](https://www.codefactor.io/repository/github/kdaniel2410/twitter4d/overview/master)
 
 ### :writing_hand: Description
 twitter4d is a simple Discord bot written using Javacord and twitter4j. It allows server administrators to stream new tweets to specific text channels.
