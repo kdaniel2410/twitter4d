@@ -43,14 +43,14 @@ public class TwitterHandler {
         for (int i = 0; i < follows.size(); i++) {
             following[i] = follows.get(i);
         }
-        logger.info("Starting stream following {} unique twitter accounts, the limit is 5000", following.length);
+        logger.info("Starting stream following {} unique twitter accounts, the limit is 5000", follows.size());
         twitterStream.filter(new FilterQuery().follow(following));
     }
 
     public void addToFilterQuery(long twitterId) {
         if (follows.contains(twitterId)) return;
         follows.add(twitterId);
-        logger.info("Added twitter id {} to  the filter query", twitterId);
+        logger.info("Now streaming {} unique twitter accounts, the limit is 5000", follows.size());
         long[] following = new long[follows.size()];
         for (int i = 0; i < follows.size(); i++) {
             following[i] = follows.get(i);
@@ -61,15 +61,11 @@ public class TwitterHandler {
     public void removeFromFilterQuery(long twitterId) {
         if (!follows.contains(twitterId)) return;
         follows.remove(twitterId);
-        logger.info("Removed twitter id {} from the filter query", twitterId);
+        logger.info("Now streaming {} unique twitter accounts, the limit is 5000", follows.size());
         long[] following = new long[follows.size()];
         for (int i = 0; i < follows.size(); i++) {
             following[i] = follows.get(i);
         }
         twitterStream.filter(new FilterQuery().follow(following));
-    }
-
-    public int getFollowingCount() {
-        return follows.size();
     }
 }
