@@ -27,15 +27,13 @@ public class UnfollowCommand implements CommandExecutor {
 
     @Command(aliases = {">unfollow"}, privateMessages = false)
     public String onCommand(String[] args, ServerTextChannel channel, Server server, User user) {
-        NonThrowingAutoCloseable closeable = channel.typeContinuously();
         if (!server.hasPermission(user, PermissionType.MANAGE_CHANNELS)) {
-            closeable.close();
             return ":warning: You do not have the correct permissions to do that";
         }
         if (args.length != 1) {
-            closeable.close();
             return ":warning: Invalid arguments";
         }
+        NonThrowingAutoCloseable closeable = channel.typeContinuously();
         twitter4j.User twitterUser;
         try {
             twitterUser = TwitterFactory.getSingleton().showUser(args[0]);

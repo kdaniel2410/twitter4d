@@ -30,15 +30,13 @@ public class FollowCommand implements CommandExecutor {
 
     @Command(aliases = {">follow"}, privateMessages = false)
     public String onCommand(String[] args, ServerTextChannel channel, Server server, User user) {
-        NonThrowingAutoCloseable closeable = channel.typeContinuously();
         if (!server.hasPermission(user, PermissionType.MANAGE_CHANNELS)) {
-            closeable.close();
             return ":warning: Missing required permissions";
         }
         if (args.length != 1) {
-            closeable.close();
             return ":warning: Invalid arguments";
         }
+        NonThrowingAutoCloseable closeable = channel.typeContinuously();
         twitter4j.User twitterUser;
         try {
             twitterUser = TwitterFactory.getSingleton().showUser(args[0]);
