@@ -60,12 +60,19 @@ public class TwitterHandler {
 
     public void removeFromFilterQuery(long twitterId) {
         if (!follows.contains(twitterId)) return;
-        follows.remove(twitterId);
-        logger.info("Now streaming {} unique twitter accounts, the limit is 5000", follows.size());
-        long[] following = new long[follows.size()];
-        for (int i = 0; i < follows.size(); i++) {
-            following[i] = follows.get(i);
+        ResultSet resultSet = databaseHandler.getByTwitterId(twitterId);
+        try {
+            if (!resultSet.next()) {
+                follows.remove(twitterId);
+                logger.info("Now streaming {} unique twitter accounts, the limit is 5000", follows.size());
+                long[] following = new long[follows.size()];
+                for (int i = 0; i < follows.size(); i++) {
+                    following[i] = follows.get(i);
+                }
+                twitterStream.filter(new FilterQuery().follow(following));
+            }
+        } catch (SQLException e) {
+            logger.error(e);
         }
-        twitterStream.filter(new FilterQuery().follow(following));
     }
 }

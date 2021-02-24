@@ -1,6 +1,7 @@
 package com.github.kdaniel2410.commands;
 
 import com.github.kdaniel2410.handlers.DatabaseHandler;
+import com.github.kdaniel2410.handlers.TwitterHandler;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
 import org.apache.logging.log4j.LogManager;
@@ -19,10 +20,12 @@ import java.sql.SQLException;
 public class UnfollowCommand implements CommandExecutor {
 
     private final DatabaseHandler databaseHandler;
+    private final TwitterHandler twitterHandler;
     private static final Logger logger = LogManager.getLogger();
 
-    public UnfollowCommand(DatabaseHandler databaseHandler) {
+    public UnfollowCommand(DatabaseHandler databaseHandler, TwitterHandler twitterHandler) {
         this.databaseHandler = databaseHandler;
+        this.twitterHandler = twitterHandler;
     }
 
     @Command(aliases = {">unfollow"}, privateMessages = false)
@@ -52,6 +55,7 @@ public class UnfollowCommand implements CommandExecutor {
         }
         logger.info("Unfollow command executed by {} on {} by {}", user.getName(), server.getName(), channel.getName());
         databaseHandler.deleteByChannelAndTwitterId(channel.getId(), twitterUser.getId());
+        twitterHandler.removeFromFilterQuery(twitterUser.getId());
         closeable.close();
         return ":wastebasket: No longer following ``@" + twitterUser.getScreenName() + " (" + twitterUser.getName() + ")``";
     }

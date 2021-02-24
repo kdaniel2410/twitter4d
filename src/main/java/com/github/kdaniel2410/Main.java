@@ -59,6 +59,6 @@ public class Main {
         commandHandler.registerCommand(new FollowCommand(twitterHandler, databaseHandler));
         commandHandler.registerCommand(new FollowingCommand(databaseHandler));
         commandHandler.registerCommand(new InviteCommand());
-        commandHandler.registerCommand(new UnfollowCommand(databaseHandler));
+        commandHandler.registerCommand(new UnfollowCommand(databaseHandler, twitterHandler));
     }
 }
