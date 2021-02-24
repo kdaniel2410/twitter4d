@@ -53,7 +53,7 @@ public class FollowCommand implements CommandExecutor {
                     e +
                     "```";
         }
-        logger.info("Follow command executed by {} on {} by {}", user.getName(), server.getName(), channel.getName());
+        logger.info("Follow command executed by {} on {} in {}", user.getName(), server.getName(), channel.getName());
         twitterHandler.addToFilterQuery(twitterUser.getId());
         databaseHandler.insertNew(server.getId(), channel.getId(), twitterUser.getId());
         closeable.close();

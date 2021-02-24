@@ -31,7 +31,7 @@ public class FollowingCommand implements CommandExecutor {
 
     @Command(aliases = {">following"}, privateMessages = false)
     public String onCommand(DiscordApi api, Server server, ServerTextChannel channel, User user) {
-        logger.info("Following command executed by {} on {} by {}", user.getName(), server.getName(), channel.getName());
+        logger.info("Following command executed by {} on {} in {}", user.getName(), server.getName(), channel.getName());
         NonThrowingAutoCloseable closeable = channel.typeContinuously();
         StringBuilder description = new StringBuilder();
         ResultSet resultSet = databaseHandler.getByServerId(server.getId());

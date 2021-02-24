@@ -53,7 +53,7 @@ public class UnfollowCommand implements CommandExecutor {
                     e +
                     "```";
         }
-        logger.info("Unfollow command executed by {} on {} by {}", user.getName(), server.getName(), channel.getName());
+        logger.info("Unfollow command executed by {} on {} in {}", user.getName(), server.getName(), channel.getName());
         databaseHandler.deleteByChannelAndTwitterId(channel.getId(), twitterUser.getId());
         twitterHandler.removeFromFilterQuery(twitterUser.getId());
         closeable.close();
