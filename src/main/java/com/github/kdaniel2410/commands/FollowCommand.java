@@ -10,6 +10,7 @@ import org.javacord.api.entity.channel.ServerTextChannel;
 import org.javacord.api.entity.permission.PermissionType;
 import org.javacord.api.entity.server.Server;
 import org.javacord.api.entity.user.User;
+import org.javacord.api.util.NonThrowingAutoCloseable;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
@@ -29,11 +30,13 @@ public class FollowCommand implements CommandExecutor {
 
     @Command(aliases = {">follow"}, privateMessages = false)
     public String onCommand(String[] args, ServerTextChannel channel, Server server, User user) {
-        channel.type();
+        NonThrowingAutoCloseable closeable = channel.typeContinuously();
         if (!server.hasPermission(user, PermissionType.MANAGE_CHANNELS)) {
+            closeable.close();
             return ":warning: Missing required permissions";
         }
         if (args.length != 1) {
+            closeable.close();
             return ":warning: Invalid arguments";
         }
         twitter4j.User twitterUser;
@@ -41,10 +44,12 @@ public class FollowCommand implements CommandExecutor {
             twitterUser = TwitterFactory.getSingleton().showUser(args[0]);
             ResultSet resultSet = databaseHandler.getByChannelAndTwitterId(channel.getId(), twitterUser.getId());
             if (resultSet.next()) {
+                closeable.close();
                 return ":warning: You are already following ``@" + twitterUser.getScreenName() + " (" + twitterUser.getName() + ")``";
             }
         } catch (TwitterException | SQLException e) {
             logger.error(e);
+            closeable.close();
             return ":warning: There was an error executing that command" +
                     "```" +
                     e +
@@ -52,6 +57,7 @@ public class FollowCommand implements CommandExecutor {
         }
         twitterHandler.addToFilterQuery(twitterUser.getId());
         databaseHandler.insertNew(server.getId(), channel.getId(), twitterUser.getId());
+        closeable.close();
         return ":bird: Now following ``@" + twitterUser.getScreenName() + " (" + twitterUser.getName() + ")``";
     }
 }

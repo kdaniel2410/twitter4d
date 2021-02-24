@@ -9,7 +9,7 @@ import org.javacord.api.entity.channel.ServerTextChannel;
 import org.javacord.api.entity.permission.PermissionType;
 import org.javacord.api.entity.server.Server;
 import org.javacord.api.entity.user.User;
-import org.javacord.api.util.logging.ExceptionLogger;
+import org.javacord.api.util.NonThrowingAutoCloseable;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
@@ -27,12 +27,13 @@ public class UnfollowCommand implements CommandExecutor {
 
     @Command(aliases = {">unfollow"}, privateMessages = false)
     public String onCommand(String[] args, ServerTextChannel channel, Server server, User user) {
-        channel.type();
+        NonThrowingAutoCloseable closeable = channel.typeContinuously();
         if (!server.hasPermission(user, PermissionType.MANAGE_CHANNELS)) {
+            closeable.close();
             return ":warning: You do not have the correct permissions to do that";
         }
         if (args.length != 1) {
-            channel.sendMessage("**Error** invalid arguments").exceptionally(ExceptionLogger.get());
+            closeable.close();
             return ":warning: Invalid arguments";
         }
         twitter4j.User twitterUser;
@@ -40,16 +41,19 @@ public class UnfollowCommand implements CommandExecutor {
             twitterUser = TwitterFactory.getSingleton().showUser(args[0]);
             ResultSet resultSet = databaseHandler.getByChannelAndTwitterId(channel.getId(), twitterUser.getId());
             if (!resultSet.next()) {
+                closeable.close();
                 return ":warning: You aren't following ``@" + twitterUser.getScreenName() + " (" + twitterUser.getName() + ")``";
             }
         } catch (TwitterException | SQLException e) {
             logger.error(e);
+            closeable.close();
             return ":warning: There was an error executing that command" +
                     "```" +
                     e +
                     "```";
         }
         databaseHandler.deleteByChannelAndTwitterId(channel.getId(), twitterUser.getId());
+        closeable.close();
         return ":wastebasket: No longer following ``@" + twitterUser.getName() + " (" + twitterUser.getScreenName() + ")``";
     }
 }

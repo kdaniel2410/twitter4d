@@ -11,6 +11,7 @@ import org.javacord.api.entity.Mentionable;
 import org.javacord.api.entity.channel.ServerTextChannel;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.entity.server.Server;
+import org.javacord.api.util.NonThrowingAutoCloseable;
 import org.javacord.api.util.logging.ExceptionLogger;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -29,7 +30,7 @@ public class FollowingCommand implements CommandExecutor {
 
     @Command(aliases = {">following"}, privateMessages = false)
     public String onCommand(DiscordApi api, Server server, ServerTextChannel channel) {
-        channel.type();
+        NonThrowingAutoCloseable closeable = channel.typeContinuously();
         StringBuilder description = new StringBuilder();
         ResultSet resultSet = databaseHandler.getByServerId(server.getId());
         try {
@@ -39,14 +40,17 @@ public class FollowingCommand implements CommandExecutor {
                 description.append(String.format("Following @%s (%s) in %s\n", twitterUser.getScreenName(), twitterUser.getName(), channelMention));
             }
             if (description.length() > 0) {
+                closeable.close();
                 channel.sendMessage(new EmbedBuilder()
                         .setColor(Constants.EMBED_COLOR)
                         .setDescription(description.toString())
                 ).exceptionally(ExceptionLogger.get());
             } else {
-                channel.sendMessage(":thinking: You are not following any twitter account(s) on this discord server").exceptionally(ExceptionLogger.get());
+                closeable.close();
+                return ":thinking: You are not following any twitter account(s) on this discord server";
             }
         } catch (SQLException | TwitterException e) {
+            closeable.close();
             return ":warning: There was an error executing that command" +
                     "```" +
                     e +
