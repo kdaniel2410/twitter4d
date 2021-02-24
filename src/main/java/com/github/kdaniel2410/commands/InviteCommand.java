@@ -6,23 +6,21 @@ import de.btobastian.sdcf4j.CommandExecutor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javacord.api.DiscordApi;
-import org.javacord.api.entity.Nameable;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.entity.permission.Permissions;
-import org.javacord.api.entity.server.Server;
-import org.javacord.api.entity.user.User;
 import org.javacord.api.util.logging.ExceptionLogger;
+
+import java.util.concurrent.TimeUnit;
 
 public class InviteCommand implements CommandExecutor {
 
     private static final Logger logger = LogManager.getLogger();
 
     @Command(aliases = {">invite"})
-    public void onCommand(DiscordApi api, TextChannel channel, User user, Server server) {
+    public void onCommand(DiscordApi api, TextChannel channel) {
         EmbedBuilder embed = new EmbedBuilder()
                 .setColor(Constants.EMBED_COLOR)
-                .setThumbnail(api.getYourself().getAvatar())
                 .setDescription("Click [here](" + api.createBotInvite(Permissions.fromBitmask(18496)) + ") to invite me to your discord server.");
         channel.sendMessage(embed).exceptionally(ExceptionLogger.get());
     }

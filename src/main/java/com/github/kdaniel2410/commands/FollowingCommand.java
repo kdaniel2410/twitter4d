@@ -29,7 +29,7 @@ public class FollowingCommand implements CommandExecutor {
     }
 
     @Command(aliases = {">following"}, privateMessages = false)
-    public void onCommand(DiscordApi api, Server server, ServerTextChannel channel, User user) throws SQLException, TwitterException {
+    public void onCommand(DiscordApi api, Server server, ServerTextChannel channel) throws SQLException, TwitterException {
         StringBuilder description = new StringBuilder();
         ResultSet resultSet = databaseHandler.getByServerId(server.getId());
         while (resultSet.next()) {
@@ -48,8 +48,7 @@ public class FollowingCommand implements CommandExecutor {
                     .setDescription(description.toString())
             );
         } else {
-            channel.sendMessage("You are not following any twitter account(s) on this discord server").exceptionally(ExceptionLogger.get());
+            channel.sendMessage(":thinking: You are not following any twitter account(s) on this discord server").exceptionally(ExceptionLogger.get());
         }
-        logger.info("Following command executed by {} in {} on {}", user.getName(), channel.getName(), server.getName());
     }
 }

@@ -28,25 +28,24 @@ public class UnfollowCommand implements CommandExecutor {
     }
 
     @Command(aliases = {">unfollow"}, privateMessages = false, async = true)
-    public void onCommand(String[] args, DiscordApi api, ServerTextChannel channel, Message message, Server server, User user) {
+    public String onCommand(String[] args, DiscordApi api, ServerTextChannel channel, Message message, Server server, User user) {
+        channel.type();
         if (!server.hasPermission(user, PermissionType.MANAGE_CHANNELS)) {
-            channel.sendMessage("**Error** you do not have the correct permissions to do that.").exceptionally(ExceptionLogger.get());
-            return;
+            return ":warning: You do not have the correct permissions to do that";
         }
-        if (args.length < 1) {
-            channel.sendMessage("**Error** not enough arguments").exceptionally(ExceptionLogger.get());
-            return;
+        if (args.length != 1) {
+            channel.sendMessage("**Error** invalid arguments").exceptionally(ExceptionLogger.get());
+            return ":warning: Invalid arguments";
         }
         api.getThreadPool().getExecutorService().execute(() -> {
             long twitterId = 0;
             try {
                 twitterId = TwitterFactory.getSingleton().showUser(args[0]).getId();
             } catch (TwitterException e) {
-                e.printStackTrace();
+                logger.error(e);
             }
             databaseHandler.deleteByChannelAndTwitterId(channel.getId(), twitterId);
         });
-        message.addReaction("\u2705").exceptionally(ExceptionLogger.get());
-        logger.info("Unfollow command executed by {} in {} on {}", user.getName(), channel, server.getName());
+        return ":wastebasket: No longer following *@" + args[0] + "*";
     }
 }
