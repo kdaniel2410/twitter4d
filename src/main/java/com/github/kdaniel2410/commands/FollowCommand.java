@@ -27,7 +27,7 @@ public class FollowCommand implements CommandExecutor {
         this.databaseHandler = databaseHandler;
     }
 
-    @Command(aliases = {">follow"}, privateMessages = false, async = true)
+    @Command(aliases = {">follow"}, privateMessages = false)
     public String onCommand(String[] args, ServerTextChannel channel, Server server, User user) {
         channel.type();
         if (!server.hasPermission(user, PermissionType.MANAGE_CHANNELS)) {
@@ -36,20 +36,22 @@ public class FollowCommand implements CommandExecutor {
         if (args.length != 1) {
             return ":warning: Invalid arguments";
         }
-        long twitterId = 0;
+        twitter4j.User twitterUser;
         try {
-            twitterId = TwitterFactory.getSingleton().showUser(args[0]).getId();
-            ResultSet resultSet = databaseHandler.getByChannelAndTwitterId(channel.getId(), twitterId);
+            twitterUser = TwitterFactory.getSingleton().showUser(args[0]);
+            ResultSet resultSet = databaseHandler.getByChannelAndTwitterId(channel.getId(), twitterUser.getId());
             if (resultSet.next()) {
-                return ":warning: You are already following that account in this channel";
+                return ":warning: You are already following ``@" + twitterUser.getScreenName() + " (" + twitterUser.getName() + ")``";
             }
-        } catch (TwitterException e) {
-            return ":warning: Twitter user not found";
-        } catch (SQLException e) {
+        } catch (TwitterException | SQLException e) {
             logger.error(e);
+            return ":warning: There was an error executing that command" +
+                    "```" +
+                    e +
+                    "```";
         }
-        twitterHandler.addToFilterQuery(twitterId);
-        databaseHandler.insertNew(server.getId(), channel.getId(), twitterId);
-        return ":bird: Now following *@" + args[0] + "*";
+        twitterHandler.addToFilterQuery(twitterUser.getId());
+        databaseHandler.insertNew(server.getId(), channel.getId(), twitterUser.getId());
+        return ":bird: Now following ``@" + twitterUser.getScreenName() + " (" + twitterUser.getName() + ")``";
     }
 }

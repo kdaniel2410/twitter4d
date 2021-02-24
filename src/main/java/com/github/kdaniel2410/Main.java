@@ -46,7 +46,7 @@ public class Main {
 
         CommandHandler commandHandler = new JavacordHandler(api);
         commandHandler.registerCommand(new FollowCommand(twitterHandler, databaseHandler));
-        commandHandler.registerCommand(new UnfollowCommand(twitterHandler, databaseHandler));
+        commandHandler.registerCommand(new UnfollowCommand(databaseHandler));
         commandHandler.registerCommand(new FollowingCommand(databaseHandler));
         commandHandler.registerCommand(new InviteCommand());
     }
