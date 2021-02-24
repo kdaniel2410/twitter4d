@@ -38,7 +38,7 @@ public class TwitterHandler {
 
     public void startStream() {
         twitterStream = new TwitterStreamFactory().getInstance().addListener(new TwitterStatusListener(api, databaseHandler));
-        if (follows.size() < 1) return;
+        if (follows.isEmpty()) return;
         long[] following = new long[follows.size()];
         for (int i = 0; i < follows.size(); i++) {
             following[i] = follows.get(i);
@@ -65,6 +65,10 @@ public class TwitterHandler {
             if (!resultSet.next()) {
                 follows.remove(twitterId);
                 logger.info("Now streaming {} unique twitter accounts, the limit is 5000", follows.size());
+                if (follows.isEmpty()) {
+                    twitterStream.cleanUp();
+                    return;
+                }
                 long[] following = new long[follows.size()];
                 for (int i = 0; i < follows.size(); i++) {
                     following[i] = follows.get(i);
