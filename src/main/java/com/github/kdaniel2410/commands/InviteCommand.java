@@ -9,16 +9,16 @@ import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.entity.permission.Permissions;
+import org.javacord.api.entity.user.User;
 import org.javacord.api.util.logging.ExceptionLogger;
-
-import java.util.concurrent.TimeUnit;
 
 public class InviteCommand implements CommandExecutor {
 
     private static final Logger logger = LogManager.getLogger();
 
     @Command(aliases = {">invite"})
-    public void onCommand(DiscordApi api, TextChannel channel) {
+    public void onCommand(DiscordApi api, TextChannel channel, User user) {
+        logger.info("Invite command executed by {}", user.getName());
         EmbedBuilder embed = new EmbedBuilder()
                 .setColor(Constants.EMBED_COLOR)
                 .setDescription("Click [here](" + api.createBotInvite(Permissions.fromBitmask(18496)) + ") to invite me to your discord server.");

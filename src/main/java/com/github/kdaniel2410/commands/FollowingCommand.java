@@ -11,6 +11,7 @@ import org.javacord.api.entity.Mentionable;
 import org.javacord.api.entity.channel.ServerTextChannel;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.entity.server.Server;
+import org.javacord.api.entity.user.User;
 import org.javacord.api.util.NonThrowingAutoCloseable;
 import org.javacord.api.util.logging.ExceptionLogger;
 import twitter4j.TwitterException;
@@ -29,7 +30,8 @@ public class FollowingCommand implements CommandExecutor {
     }
 
     @Command(aliases = {">following"}, privateMessages = false)
-    public String onCommand(DiscordApi api, Server server, ServerTextChannel channel) {
+    public String onCommand(DiscordApi api, Server server, ServerTextChannel channel, User user) {
+        logger.info("Following command executed by {} on {} by {}", user.getName(), server.getName(), channel.getName());
         NonThrowingAutoCloseable closeable = channel.typeContinuously();
         StringBuilder description = new StringBuilder();
         ResultSet resultSet = databaseHandler.getByServerId(server.getId());
