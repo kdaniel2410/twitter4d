@@ -52,6 +52,6 @@ public class UnfollowCommand implements CommandExecutor {
         }
         databaseHandler.deleteByChannelAndTwitterId(channel.getId(), twitterUser.getId());
         closeable.close();
-        return ":wastebasket: No longer following ``@" + twitterUser.getName() + " (" + twitterUser.getScreenName() + ")``";
+        return ":wastebasket: No longer following ``@" + twitterUser.getScreenName() + " (" + twitterUser.getName() + ")``";
     }
 }
