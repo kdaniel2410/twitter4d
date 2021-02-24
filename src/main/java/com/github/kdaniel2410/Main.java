@@ -33,7 +33,9 @@ public class Main {
 
         logger.info("Logged in as {}", api.getYourself().getName());
         logger.info("User the following link to invite me to your server {}", api.createBotInvite(Permissions.fromBitmask(18496)));
-        logger.info("Serving {} server(s) and {} cached user(s)", api.getServers().size(), api.getCachedUsers().size());
+        logger.info("Serving {} server(s)", api.getServers().size());
+
+        api.getServers().forEach(server -> logger.info("Loaded server {} owned by {} with {} members", server.getName(), server.getOwner().map(Nameable::getName).orElse("unknown user"), server.getMemberCount()));
 
         api.addServerJoinListener(event -> {
             String server = event.getServer().getName();
