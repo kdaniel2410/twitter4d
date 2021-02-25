@@ -26,9 +26,5 @@ If you would like to make any changes, feel free to make a pull request. If you 
 ##### Why is the bot not sending new tweets?
 Make sure the bot has all the correct permissions. It needs to be able to read messages in the channel to see the initial >follow command as well as be able to send messages when the twitter account you follow creates a new tweet.
 
-
-##### How do I unfollow all twitter accounts quickly?
-Despite the fact there is no command to do this, you can kick the bot from your server and then re-invite it. 
-
 ##### Are there any limits to the number of accounts I can follow?
 At the moment there are no limits enforced by the bot limiting the number of twitter accounts you can follow. However, the twitter api limits the number of follow streams to 5000. This means that in the future I may have to enforce limits however if this comes to pass I will give plenty of notice to server owners.

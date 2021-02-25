@@ -36,15 +36,35 @@ public class UnfollowCommand implements CommandExecutor {
         if (args.length != 1) {
             return ":warning: Invalid arguments";
         }
+        logger.info("Unfollow command executed by {} on {} in {}", user.getName(), server.getName(), channel.getName());
         NonThrowingAutoCloseable closeable = channel.typeContinuously();
         twitter4j.User twitterUser;
         try {
-            twitterUser = TwitterFactory.getSingleton().showUser(args[0]);
-            ResultSet resultSet = databaseHandler.getByChannelAndTwitterId(channel.getId(), twitterUser.getId());
-            if (!resultSet.next()) {
+            if (args[0].equalsIgnoreCase("all")) {
+                ResultSet resultSet = databaseHandler.getByServerId(server.getId());
+                if (!resultSet.next()) {
+                    closeable.close();
+                    return ":warning: You aren't following anyone";
+                }
+                databaseHandler.deleteByServerId(server.getId());
+                while (resultSet.next()) {
+                    twitterHandler.removeFromFilterQuery(resultSet.getLong("twitterId"));
+                }
                 closeable.close();
-                return ":warning: You aren't following ``@" + twitterUser.getScreenName() + " (" + twitterUser.getName() + ")``";
+                return ":wastebasket: No longer following anyone";
+            } else {
+                twitterUser = TwitterFactory.getSingleton().showUser(args[0]);
+                ResultSet resultSet = databaseHandler.getByChannelAndTwitterId(channel.getId(), twitterUser.getId());
+                if (!resultSet.next()) {
+                    closeable.close();
+                    return ":warning: You aren't following ``@" + twitterUser.getScreenName() + " (" + twitterUser.getName() + ")``";
+                }
+                databaseHandler.deleteByChannelAndTwitterId(channel.getId(), twitterUser.getId());
+                twitterHandler.removeFromFilterQuery(twitterUser.getId());
+                closeable.close();
+                return ":wastebasket: No longer following ``@" + twitterUser.getScreenName() + " (" + twitterUser.getName() + ")``";
             }
+
         } catch (TwitterException | SQLException e) {
             logger.error(e);
             closeable.close();
@@ -53,10 +73,5 @@ public class UnfollowCommand implements CommandExecutor {
                     e +
                     "```";
         }
-        logger.info("Unfollow command executed by {} on {} in {}", user.getName(), server.getName(), channel.getName());
-        databaseHandler.deleteByChannelAndTwitterId(channel.getId(), twitterUser.getId());
-        twitterHandler.removeFromFilterQuery(twitterUser.getId());
-        closeable.close();
-        return ":wastebasket: No longer following ``@" + twitterUser.getScreenName() + " (" + twitterUser.getName() + ")``";
     }
 }
