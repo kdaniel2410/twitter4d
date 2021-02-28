@@ -51,7 +51,7 @@ public class TwitterStatusListener implements StatusListener {
 
     @Override
     public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
-        logger.warn(statusDeletionNotice);
+
     }
 
     @Override
