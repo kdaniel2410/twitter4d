@@ -44,12 +44,14 @@ public class UnfollowCommand implements CommandExecutor {
                 ResultSet resultSet = databaseHandler.getByServerId(server.getId());
                 if (!resultSet.next()) {
                     closeable.close();
+                    resultSet.close();
                     return ":warning: You aren't following anyone";
                 }
                 databaseHandler.deleteByServerId(server.getId());
                 while (resultSet.next()) {
                     twitterHandler.removeFromFilterQuery(resultSet.getLong("twitterId"));
                 }
+                resultSet.close();
                 closeable.close();
                 return ":wastebasket: No longer following anyone";
             } else {
@@ -57,8 +59,10 @@ public class UnfollowCommand implements CommandExecutor {
                 ResultSet resultSet = databaseHandler.getByChannelAndTwitterId(channel.getId(), twitterUser.getId());
                 if (!resultSet.next()) {
                     closeable.close();
+                    resultSet.close();
                     return ":warning: You aren't following ``@" + twitterUser.getScreenName() + " (" + twitterUser.getName() + ")``";
                 }
+                resultSet.close();
                 databaseHandler.deleteByChannelAndTwitterId(channel.getId(), twitterUser.getId());
                 twitterHandler.removeFromFilterQuery(twitterUser.getId());
                 closeable.close();

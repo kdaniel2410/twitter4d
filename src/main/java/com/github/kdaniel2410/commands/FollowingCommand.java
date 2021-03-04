@@ -41,6 +41,7 @@ public class FollowingCommand implements CommandExecutor {
                 String channelMention = api.getServerTextChannelById(resultSet.getLong("channelId")).map(Mentionable::getMentionTag).orElse("missing channel");
                 description.append(String.format("Following @%s (%s) in %s\n", twitterUser.getScreenName(), twitterUser.getName(), channelMention));
             }
+            resultSet.close();
             if (description.length() > 0) {
                 closeable.close();
                 channel.sendMessage(new EmbedBuilder()

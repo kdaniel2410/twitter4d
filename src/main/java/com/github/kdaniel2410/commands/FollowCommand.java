@@ -42,9 +42,11 @@ public class FollowCommand implements CommandExecutor {
             twitterUser = TwitterFactory.getSingleton().showUser(args[0]);
             ResultSet resultSet = databaseHandler.getByChannelAndTwitterId(channel.getId(), twitterUser.getId());
             if (resultSet.next()) {
+                resultSet.close();
                 closeable.close();
                 return ":warning: You are already following ``@" + twitterUser.getScreenName() + " (" + twitterUser.getName() + ")``";
             }
+            resultSet.close();
         } catch (TwitterException | SQLException e) {
             logger.error(e);
             closeable.close();
