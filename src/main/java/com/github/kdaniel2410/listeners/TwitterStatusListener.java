@@ -8,10 +8,7 @@ import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.channel.Channel;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.util.logging.ExceptionLogger;
-import twitter4j.StallWarning;
-import twitter4j.Status;
-import twitter4j.StatusDeletionNotice;
-import twitter4j.StatusListener;
+import twitter4j.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -32,11 +29,21 @@ public class TwitterStatusListener implements StatusListener {
         if (status.isRetweet()) return;
         if (status.getInReplyToScreenName() != null) return;
         String url = String.format("https://twitter.com/%s/status/%d", status.getUser().getScreenName(), status.getId());
+        String mediaUrl = "";
+        for (MediaEntity mediaEntity : status.getMediaEntities()) {
+            if (mediaEntity.getType().equals("photo") || mediaEntity.getType().equals("animated_gif")) {
+                mediaUrl = mediaEntity.getMediaURL();
+                break;
+            }
+        }
         EmbedBuilder embed = new EmbedBuilder()
                 .setColor(Constants.EMBED_COLOR)
                 .setAuthor(status.getUser().getScreenName(), status.getUser().getURL(), status.getUser().getProfileImageURL())
                 .setDescription(String.format("%s \n\n Click [here](%s) to open this tweet in twitter", status.getText(), url))
                 .setTimestamp(status.getCreatedAt().toInstant());
+        if (!mediaUrl.isBlank()) {
+            embed.setImage(mediaUrl);
+        }
         ResultSet resultSet = databaseHandler.getByTwitterId(status.getUser().getId());
         logger.info("New tweet from {}", status.getUser().getScreenName());
         try {
