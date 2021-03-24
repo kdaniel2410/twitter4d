@@ -1,9 +1,6 @@
 package com.github.kdaniel2410;
 
-import com.github.kdaniel2410.commands.FollowCommand;
-import com.github.kdaniel2410.commands.FollowingCommand;
-import com.github.kdaniel2410.commands.InviteCommand;
-import com.github.kdaniel2410.commands.UnfollowCommand;
+import com.github.kdaniel2410.commands.*;
 import com.github.kdaniel2410.handlers.DatabaseHandler;
 import com.github.kdaniel2410.handlers.TwitterHandler;
 import de.btobastian.sdcf4j.CommandHandler;
@@ -62,5 +59,6 @@ public class Main {
         commandHandler.registerCommand(new FollowingCommand(databaseHandler));
         commandHandler.registerCommand(new InviteCommand());
         commandHandler.registerCommand(new UnfollowCommand(databaseHandler, twitterHandler));
+        commandHandler.registerCommand(new AnnounceCommand());
     }
 }
