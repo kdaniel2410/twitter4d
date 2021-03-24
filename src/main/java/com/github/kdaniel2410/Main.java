@@ -48,7 +48,7 @@ public class Main {
 
         api.addMessageCreateListener(event -> {
             if (event.isPrivateMessage()) {
-                logger.info("Received message: " + event.getMessageContent() + " from " + event.getMessageAuthor());
+                logger.info("Received message: " + event.getMessageContent() + " from " + event.getMessageAuthor().getName());
             }
         });
 
