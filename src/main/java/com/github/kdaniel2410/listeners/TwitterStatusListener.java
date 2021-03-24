@@ -41,7 +41,7 @@ public class TwitterStatusListener implements StatusListener {
                 .setAuthor(status.getUser().getScreenName(), status.getUser().getURL(), status.getUser().getProfileImageURL())
                 .setDescription(String.format("%s \n\n Click [here](%s) to open this tweet in twitter", status.getText(), url))
                 .setTimestamp(status.getCreatedAt().toInstant());
-        if (!mediaUrl.isBlank()) {
+        if (!mediaUrl.isEmpty()) {
             embed.setImage(mediaUrl);
         }
         ResultSet resultSet = databaseHandler.getByTwitterId(status.getUser().getId());
