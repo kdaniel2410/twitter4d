@@ -27,7 +27,7 @@ public class Main {
 
         DiscordApi api = new DiscordApiBuilder()
                 .setToken(System.getenv("token"))
-                .setAllIntents()
+                .setAllNonPrivilegedIntents()
                 .login()
                 .join();
 
