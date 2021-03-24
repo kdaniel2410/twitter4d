@@ -31,6 +31,8 @@ public class Main {
                 .login()
                 .join();
 
+        api.setMessageCacheSize(10, 3600);
+
         logger.info("Logged in as {}", api.getYourself().getName());
         logger.info("Use the following link to invite me to your server {}", api.createBotInvite(Permissions.fromBitmask(18496)));
         logger.info("Serving {} server(s)", api.getServers().size());
