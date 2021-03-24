@@ -48,6 +48,12 @@ public class Main {
             logger.info("Left server " + server + " owned by " + owner);
         });
 
+        api.addMessageCreateListener(event -> {
+            if (event.isPrivateMessage()) {
+                logger.info("Received message: " + event.getMessageContent() + " from " + event.getMessageAuthor());
+            }
+        });
+
         DatabaseHandler databaseHandler = new DatabaseHandler();
         TwitterHandler twitterHandler = new TwitterHandler(api, databaseHandler);
 
